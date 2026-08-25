@@ -1,16 +1,14 @@
-# This is a sample Python script.
+from sqlalchemy import text
 
-# Press Maj+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from epic_events.database import engine
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def verifier_connexion():
+    with engine.connect() as connexion:
+        connexion.execute(text("SELECT 1"))
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    print("Connexion à PostgreSQL réussie.")
+
+
+if __name__ == "__main__":
+    verifier_connexion()
