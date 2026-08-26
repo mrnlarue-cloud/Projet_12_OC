@@ -1,6 +1,9 @@
-# Indique que la colonne PostgreSQL stocke du texte
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+# String = texte en BDD, ForeignKey = ID lié à une autre table
+from sqlalchemy import ForeignKey, String
+
+# Mapped = type Python, mapped_column = colonne SQL
+# relationship = lien entre les objets Python
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from epic_events.database import Base
 
@@ -22,3 +25,11 @@ class Collaborateur(Base):
 
     # Hash du mdp
     mot_de_passe_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    # ID de département associé
+    departement_id: Mapped[int] = mapped_column(
+        ForeignKey("departements.id"), nullable=False
+    )
+
+    # Accès Département depuis l'objet Python
+    departement = relationship("Departement", back_populates="collaborateurs")

@@ -1,10 +1,10 @@
-# SQLAlchemy pour les textes en BDD
+# Indique que la colonne PostgreSQL stocke du texte
 from sqlalchemy import String
 
 # Mapped = type Python, mapped_column = colonne SQL
-from sqlalchemy.orm import Mapped, mapped_column
+# relationship = lien entre les objets Python
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-# Base commune aux modèles
 from epic_events.database import Base
 
 # ================================ #
@@ -21,3 +21,6 @@ class Departement(Base):
 
     # Nom obligatoire et unique
     nom: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+
+    # Collaborateurs associés au Département
+    collaborateurs = relationship("Collaborateur", back_populates="departement")
