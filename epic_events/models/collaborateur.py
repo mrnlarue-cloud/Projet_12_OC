@@ -20,11 +20,11 @@ class Collaborateur(Base):
     numero_employe: Mapped[int] = mapped_column(primary_key=True)
 
     # Informations sur le collaborateur
-    nom: Mapped[str] = mapped_column(String(100), nullable=False)
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    nom: Mapped[str] = mapped_column(String, nullable=False)
+    email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 
     # Hash du mdp
-    mot_de_passe_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    mot_de_passe_hash: Mapped[str] = mapped_column(String, nullable=False)
 
     # ID de département associé
     departement_id: Mapped[int] = mapped_column(
@@ -33,3 +33,6 @@ class Collaborateur(Base):
 
     # Accès Département depuis l'objet Python
     departement = relationship("Departement", back_populates="collaborateurs")
+
+    # Accès aux clients associés à leurs commerciaux
+    clients = relationship("Client", back_populates="commercial")
