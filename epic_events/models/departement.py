@@ -20,7 +20,7 @@ class Departement(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # Nom obligatoire et unique
-    nom: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    nom: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 
     # Collaborateurs associés au Département
     collaborateurs = relationship("Collaborateur", back_populates="departement")
