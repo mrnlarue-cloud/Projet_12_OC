@@ -44,3 +44,9 @@ class Collaborateur(Base):
 
     # Accès aux clients associés à leurs commerciaux
     clients = relationship("Client", back_populates="commercial")
+
+    # Accès aux contrats associés au commercial
+    contrats = relationship("Contrat", back_populates="commercial")
+
+    # Accès aux événements attribués au support
+    evenements = relationship("Evenement", back_populates="support")

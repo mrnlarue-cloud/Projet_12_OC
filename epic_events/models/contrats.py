@@ -40,3 +40,6 @@ class Contrat(Base):
     # Accès au client & commercial depuis l'objet python
     client = relationship("Client", back_populates="contrats")
     commercial = relationship("Collaborateur", back_populates="contrats")
+
+    # Accès à l'événement associé au contrat
+    evenement = relationship("Evenement", back_populates="contrat", uselist=False)
