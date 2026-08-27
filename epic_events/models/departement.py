@@ -13,14 +13,22 @@ from epic_events.database import Base
 
 
 class Departement(Base):
-    # Nom de la table en BDD
+    # Nom de la table en DB
     __tablename__ = "departements"
+
+    # ================================ #
+    # Champs obligatoires
+    # ================================ #
 
     # ID unique
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # Nom obligatoire et unique
     nom: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+
+    # ================================ #
+    # Relations
+    # ================================ #
 
     # Collaborateurs associés au Département
     collaborateurs = relationship("Collaborateur", back_populates="departement")

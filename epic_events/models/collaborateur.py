@@ -13,8 +13,12 @@ from epic_events.database import Base
 
 
 class Collaborateur(Base):
-    # Nom de la table en BDD
+    # Nom de la table en DB
     __tablename__ = "collaborateurs"
+
+    # ================================ #
+    # Champs obligatoires
+    # ================================ #
 
     # N° employé et ID unique
     numero_employe: Mapped[int] = mapped_column(primary_key=True)
@@ -30,6 +34,10 @@ class Collaborateur(Base):
     departement_id: Mapped[int] = mapped_column(
         ForeignKey("departements.id"), nullable=False
     )
+
+    # ================================ #
+    # Relations
+    # ================================ #
 
     # Accès Département depuis l'objet Python
     departement = relationship("Departement", back_populates="collaborateurs")

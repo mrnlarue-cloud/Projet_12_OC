@@ -14,6 +14,10 @@ class Client(Base):
     # Nom de la table en DB
     __tablename__ = "clients"
 
+    # ================================ #
+    # Champs obligatoires
+    # ================================ #
+
     # ID unique
     id: Mapped[int] = mapped_column(primary_key=True)
 
@@ -29,6 +33,10 @@ class Client(Base):
     commercial_id: Mapped[int] = mapped_column(
         ForeignKey("collaborateurs.numero_employe"), nullable=False
     )
+
+    # ================================ #
+    # Relations
+    # ================================ #
 
     # Accès au commercial depuis l'objet Python
     commercial = relationship("Collaborateur", back_populates="clients")
