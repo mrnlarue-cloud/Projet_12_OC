@@ -1,9 +1,10 @@
 from unittest.mock import Mock
 
 from epic_events.security.authentification import authentification_collaborateurs
+from epic_events.security.mot_de_passe import hash_mdp
 
 # ================================
-# Test unitaire d'authentification
+# Tests unitaires d'authentification
 # ================================
 
 
@@ -22,3 +23,44 @@ def test_authentification_email_inconnu():
     )
 
     assert collaborateur is None
+
+
+def test_authentification_mdp_incorrect():
+    # Simule un bon collaborateur avec MDP & hash
+    collaborateur = Mock()
+    collaborateur.mot_de_passe_hash = hash_mdp("bon_mdp_test")
+
+    # Collaborateur existant
+    resultat = Mock()
+    resultat.scalar_one_or_none.return_value = collaborateur
+
+    # Simulation de la session
+    session = Mock()
+    session.execute.return_value = resultat
+
+    # Tentative de co. mauvais MDP
+    connexion = authentification_collaborateurs(
+        session, "connu@test.com", "mauvais_mdp_test"
+    )
+
+    assert connexion is None
+
+
+def test_authentification_identifiants_corrects():
+    # Simule un bon collaborateur avec MDP & hash
+    collaborateur = Mock()
+    collaborateur.mot_de_passe_hash = hash_mdp("bon_mdp_test")
+
+    # Collaborateur ok
+    resultat = Mock()
+    resultat.scalar_one_or_none.return_value = collaborateur
+
+    session = Mock()
+    session.execute.return_value = resultat
+
+    # Tentative de co. bon MDP
+    connexion = authentification_collaborateurs(
+        session, "connu@test.com", "bon_mdp_test"
+    )
+
+    assert connexion is collaborateur
