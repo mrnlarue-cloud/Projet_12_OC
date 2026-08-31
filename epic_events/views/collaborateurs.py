@@ -11,10 +11,10 @@ def saisir_infos_collaborateur():
     email = input("E-mail : ").strip()
 
     # Affiche une étoile par caractère du MDP
-    mdp = pwinput("MDP : ", mask="*")
+    mdp = pwinput("Mot de passe : ", mask="*")
 
     # Confirme le MDP avec le même affichage masqué
-    confirmation_mdp = pwinput("Confirmer le MDP : ", mask="*")
+    confirmation_mdp = pwinput("Confirmer le mot de passe : ", mask="*")
 
     # Transmet les quatre saisies
     return nom, email, mdp, confirmation_mdp
