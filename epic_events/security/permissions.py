@@ -46,3 +46,28 @@ def verifier_modif_client(collaborateur, client):
     # Refus si le commercial n'est pas responsable du client
     if client.commercial_id != collaborateur.numero_employe:
         raise PermissionError("Vous ne pouvez modifier que vos propres clients.")
+
+
+# ================================ #
+# Modification d'un contrat
+# ================================ #
+
+
+def verifier_modif_contrat(collaborateur, contrat):
+    verifier_authentification(collaborateur)
+
+    # Gestion peut modifier tous les contrats
+    if collaborateur.departement.nom == "Gestion":
+        return
+
+    # Les autres rôles ne peuvent pas modifier les contrats
+    if collaborateur.departement.nom != "Commercial":
+        raise PermissionError(
+            "Cette action est réservée aux départements Gestion et Commercial."
+        )
+
+    # Un Commercial est limité aux contrats de ses propres clients
+    if contrat.commercial_id != collaborateur.numero_employe:
+        raise PermissionError(
+            "Vous ne pouvez modifier que les contrats de vos clients."
+        )
