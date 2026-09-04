@@ -177,3 +177,58 @@ def creation_evenement(
     session.add(nouvel_evenement)
 
     return nouvel_evenement
+
+
+# ================================ #
+# Affectation d'un Support
+# ================================ #
+
+
+def affecter_support(evenement, support):
+    # Un seul collaborateur support peut-être affecté
+    if support.departement.nom != "Support":
+        raise ValueError(
+            "Le collaborateur sélectionné n'appartient pas au Département Support."
+        )
+
+    # Non utilisation d'un même évènement
+    if evenement.support is not None:
+        raise ValueError(
+            "Cet évènement est déjà affecté à un membre du Département Support."
+        )
+
+    evenement.support = support
+
+    return evenement
+
+
+# ================================ #
+# Modification d'un évènement
+# ================================ #
+
+
+# Infos d'un évènement
+def modification_evenement(
+    evenement,
+    nom,
+    date_debut,
+    date_fin,
+    lieu,
+    nombre_participants,
+    notes,
+):
+    # Une saisie vide conserve la valeur actuelle
+    if nom:
+        evenement.nom = nom.strip()
+    if date_debut:
+        evenement.date_debut = convertir_date_heure(date_debut)
+    if date_fin:
+        evenement.date_fin = convertir_date_heure(date_fin)
+    if lieu:
+        evenement.lieu = lieu.strip()
+    if nombre_participants:
+        evenement.nombre_participants = convertir_participants(nombre_participants)
+    if notes:
+        evenement.notes = notes.strip()
+
+    return evenement
