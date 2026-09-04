@@ -6,29 +6,94 @@ Réalisé par Marion LARUE.
 
 ## Description
 
-Epic Events CRM est une application en ligne de commande permettant de gérer une clientèle, des contrats et des événements de l’entreprise Epic Events.
+Epic Events CRM est une application en ligne de commande permettant de gérer les clients, les contrats et les événements de l’entreprise Epic Events.
 
 L’application utilise Python, SQLAlchemy et PostgreSQL.
 
 ## État du projet
 
-Fonctionnalités actuellement développées :
+Fonctionnalités terminées :
 
 - Connexion à PostgreSQL
 - Modèles et relations SQLAlchemy
 - Création des tables
 - Schéma de la base de données
 - Matrice des permissions
+- Hachage et vérification des mots de passe avec Argon2
+- Authentification des collaborateurs
+- Permissions selon les départements
+- Création, consultation, modification et suppression des collaborateurs
+- Création, consultation et modification des clients
+- Association automatique d’un client au Commercial connecté
+- Création, consultation et modification des contrats
+- Filtres des contrats non signés et non soldés
 
-- [...]
+Fonctionnalités restant à développer :
+
+- Gestion des événements selon les permissions
+- Filtres des événements
+- Menu principal de l’application
+- Journalisation des erreurs avec Sentry
+
+## Architecture
+
+L’application utilise une architecture « fat models, skinny views ».
+
+- Les modèles contiennent les requêtes SQLAlchemy et les règles métier
+- Les vues recueillent les saisies et affichent les résultats dans la console
+- Les contrôleurs coordonnent l’authentification, les permissions, les modèles et les transactions
+- Le package de sécurité contient l’authentification, les permissions et la gestion des mots de passe
+
+### Organisation finale des fichiers
+
+```text
+epic_events/
+├── controllers/
+│   ├── collaborateurs.py
+│   ├── clients.py
+│   ├── contrats.py
+│   └── evenements.py
+├── models/
+│   ├── departement.py
+│   ├── collaborateur.py
+│   ├── clients.py
+│   ├── contrats.py
+│   └── evenements.py
+├── security/
+│   ├── authentification.py
+│   ├── mot_de_passe.py
+│   └── permissions.py
+├── views/
+│   ├── collaborateurs.py
+│   ├── clients.py
+│   ├── contrats.py
+│   └── evenements.py
+└── database.py
+
+docs/
+├── matrice_permissions.md
+└── schema-base-donnees.svg
+
+tests/
+├── test_authentification.py
+├── test_collaborateurs.py
+├── test_mdp.py
+└── test_permissions.py
+
+create_tables.py
+main.py
+requirements.txt
+.env.example
+README.md
+```
 
 ## Installation
 
 Prérequis :
 
-- Python 3.11 ;
-- PostgreSQL 17 ;
-- Git.
+- Python 3.11
+- PostgreSQL 17
+- Git
 
 Créer et activer l’environnement virtuel :
 
@@ -45,7 +110,7 @@ python -m pip install -r requirements.txt
 
 ## Configuration
 
-Créer une base PostgreSQL nommée `epic_events_db` ainsi qu’un utilisateur dédié sans privilèges administratifs.
+Créer une base de données PostgreSQL nommée `epic_events_db` ainsi qu’un utilisateur dédié sans droits administratifs.
 
 Copier le fichier d’exemple :
 
@@ -53,7 +118,7 @@ Copier le fichier d’exemple :
 Copy-Item .env.example .env
 ```
 
-Compléter ensuite les variables dans `.env` :
+Compléter les variables dans `.env` :
 
 ```dotenv
 DB_NAME=epic_events_db
@@ -63,25 +128,34 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-ATTENTION : Le fichier `.env` contient des informations sensibles et ne doit jamais être publié.
+Le fichier `.env` contient des informations sensibles et ne doit jamais être ajouté au dépôt Git.
 
 ## Utilisation
 
-Création des tables absentes :
+Créer les tables absentes :
 
 ```powershell
 python create_tables.py
 ```
 
-Vérifier la connexion à PostgreSQL :
+Dans l’état actuel du développement, la commande suivante vérifie la connexion à PostgreSQL :
 
 ```powershell
 python main.py
 ```
 
+Cette commande lancera l’application lorsque le menu principal sera terminé.
+
 ## Qualité du code
+
+Formater le code :
 
 ```powershell
 black .
+```
+
+Vérifier le respect des règles de style :
+
+```powershell
 flake8 .
 ```
