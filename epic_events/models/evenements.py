@@ -46,3 +46,27 @@ class Evenement(Base):
     # Accès au contrat et au support depuis l'objet Python
     contrat = relationship("Contrat", back_populates="evenement")
     support = relationship("Collaborateur", back_populates="evenements")
+
+
+# ================================ #
+# Conversion des saisies
+# ================================ #
+
+
+# La console renvoie du texte -> SQLAlchemy attend date et heure
+def convertir_date_heure(date_heure_saisie):
+    try:
+        return datetime.strptime(
+            date_heure_saisie.strip(),
+            "%d/%m/%Y %H:%M",
+        )
+    except ValueError:
+        raise ValueError("La date et l'heure doivent être au format JJ/MM/AAAA HH:MM.")
+
+
+# Le nb de participants arrive en texte donc modif
+def convertir_participants(nombre_participants):
+    try:
+        return int(nombre_participants.strip())
+    except ValueError:
+        raise ValueError("Le nombre de participants doit être un nombre entier.")
