@@ -119,3 +119,61 @@ def evenements_affectes_support(session, support):
         .order_by(Evenement.id)
     )
     return session.execute(requete).scalars().all()
+
+
+# ================================ #
+# Création d'un évènement
+# ================================ #
+
+
+def creation_evenement(
+    session,
+    contrat,
+    nom,
+    date_debut,
+    date_fin,
+    lieu,
+    nombre_participants,
+    notes,
+):
+    # Nettoyage des infos
+    nom = nom.strip()
+    lieu = lieu.strip()
+    notes = notes.strip()
+
+    # Données obligatoires
+    if (
+        not nom
+        or not date_debut
+        or not date_fin
+        or not lieu
+        or not nombre_participants
+        or not notes
+    ):
+        raise ValueError("Toutes les informations de l'évènement sont obligatoires.")
+
+    # Création possible si contrat signé
+    if not contrat.signature:
+        raise ValueError("Le contrat doit être signé avant de créer un évènement.")
+
+    # Un contrat == un seul évènement
+    if contrat.evenement is not None:
+        raise ValueError("Un évènement existe déjà pour ce contrat.")
+
+    date_debut = convertir_date_heure(date_debut)
+    date_fin = convertir_date_heure(date_fin)
+    nombre_participants = convertir_participants(nombre_participants)
+
+    nouvel_evenement = Evenement(
+        nom=nom,
+        date_debut=date_debut,
+        date_fin=date_fin,
+        lieu=lieu,
+        nombre_participants=nombre_participants,
+        notes=notes,
+        contrat=contrat,
+    )
+
+    session.add(nouvel_evenement)
+
+    return nouvel_evenement
