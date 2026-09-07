@@ -4,9 +4,11 @@ Projet 12 de la formation Développeur d’application Python d’OpenClassrooms
 
 Réalisé par Marion LARUE.
 
+Repository GitHub : https://github.com/mrnlarue-cloud/Projet_12_OC
+
 ## Description
 
-Epic Events CRM est une application en ligne de commande permettant de gérer les clients, les contrats et les événements de l’entreprise Epic Events.
+Epic Events CRM est une application en ligne de commande permettant de gérer les collaborateurs, les clients, les contrats et les évènements de l’entreprise Epic Events.
 
 L’application utilise Python, SQLAlchemy et PostgreSQL.
 
@@ -27,13 +29,11 @@ Fonctionnalités terminées :
 - Association automatique d’un client au Commercial connecté
 - Création, consultation et modification des contrats
 - Filtres des contrats non signés et non soldés
-
-Fonctionnalités restant à développer :
-
-- Gestion des événements selon les permissions
-- Filtres des événements
+- Création, consultation et modification des évènements selon les permissions
+- Affectation d’un collaborateur Support à un évènement
+- Filtres des évènements sans Support et des évènements attribués au Support connecté
 - Menu principal de l’application
-- Journalisation des erreurs avec Sentry
+- Journalisation des erreurs techniques avec Sentry
 
 ## Architecture
 
@@ -126,6 +126,7 @@ DB_USER=epic_events_app
 DB_PASSWORD=mot_de_passe
 DB_HOST=localhost
 DB_PORT=5432
+SENTRY_DSN=votre_dsn_sentry
 ```
 
 Le fichier `.env` contient des informations sensibles et ne doit jamais être ajouté au dépôt Git.
@@ -138,13 +139,13 @@ Créer les tables absentes :
 python create_tables.py
 ```
 
-Dans l’état actuel du développement, la commande suivante vérifie la connexion à PostgreSQL :
+Lancer l’application :
 
 ```powershell
 python main.py
 ```
 
-Cette commande lancera l’application lorsque le menu principal sera terminé.
+Le menu principal permet ensuite d’accéder à la gestion des collaborateurs, des clients, des contrats et des évènements.
 
 ## Qualité du code
 
