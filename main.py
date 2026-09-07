@@ -1,3 +1,6 @@
+from os import getenv
+
+import sentry_sdk
 from sqlalchemy import text
 
 from epic_events.controllers.clients import (
@@ -29,12 +32,24 @@ from epic_events.controllers.evenements import (
 from epic_events.database import engine
 
 # ================================ #
+# Initialisation de Sentry
+# ================================ #
+
+
+def initialiser_sentry():
+    # Récupère le DSN depuis .env sans l'écrire dans le code
+    sentry_sdk.init(
+        dsn=getenv("SENTRY_DSN"),
+    )
+
+
+# ================================ #
 # Vérification de la connexion
 # ================================ #
 
 
 def verifier_connexion():
-    # Vérifie que PostgreSQL répond avant de lancer l'app
+    # Vérifie que PostgreSQL répond avant de lancer l'application
     with engine.connect() as connexion:
         connexion.execute(text("SELECT 1"))
 
@@ -217,7 +232,10 @@ def afficher_menu_principal():
 
 
 def lancer_application():
-    # Vérifie la connexion à la DB avant d'afficher le menu
+    # Active le suivi des erreurs techniques
+    initialiser_sentry()
+
+    # Vérifie ensuite la connexion à la DB
     verifier_connexion()
 
     application_active = True
