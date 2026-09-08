@@ -78,6 +78,7 @@ tests/
 ├── test_authentification.py
 ├── test_collaborateurs.py
 ├── test_mdp.py
+├── test_parcours_integration.py
 └── test_permissions.py
 
 create_tables.py
