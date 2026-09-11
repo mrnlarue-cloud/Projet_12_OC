@@ -54,7 +54,7 @@ def creer_premier_compte_gestion():
     finally:
         session.close()
 
-    afficher_message("Les départements et le premier compte Gestion sont prêts.")
+    afficher_message("Compte Gestion créé avec succès.")
 
 
 # ================================ #
