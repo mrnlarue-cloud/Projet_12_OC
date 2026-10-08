@@ -1,8 +1,8 @@
-# String = texte en BDD, ForeignKey = ID lié à une autre table
-from sqlalchemy import ForeignKey, String, select
+# ================================ #
+# Imports
+# ================================ #
 
-# Mapped = type Python, mapped_column = colonne SQL
-# relationship = lien entre les objets Python
+from sqlalchemy import ForeignKey, String, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from epic_events.database import Base
@@ -10,6 +10,7 @@ from epic_events.models.clients import Client
 from epic_events.models.contrats import Contrat
 from epic_events.models.departement import Departement
 from epic_events.models.evenements import Evenement
+from epic_events.security.chiffrement import TexteChiffre
 from epic_events.security.mot_de_passe import hash_mdp
 
 # ================================ #
@@ -28,8 +29,8 @@ class Collaborateur(Base):
     # N° employé et ID unique
     numero_employe: Mapped[int] = mapped_column(primary_key=True)
 
-    # Informations sur le collaborateur
-    nom: Mapped[str] = mapped_column(String, nullable=False)
+    # Nom chiffré et email utilisé pour l'authentification
+    nom: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
 
     # Hash du mdp
