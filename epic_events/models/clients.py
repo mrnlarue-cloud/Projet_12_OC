@@ -1,6 +1,8 @@
+from epic_events.security.chiffrement import DateChiffree, TexteChiffre
+
 from datetime import date, datetime
 
-from sqlalchemy import Date, ForeignKey, String, select
+from sqlalchemy import ForeignKey, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from epic_events.database import Base
@@ -20,12 +22,12 @@ class Client(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # Infos client
-    nom_complet: Mapped[str] = mapped_column(String, nullable=False)
-    email: Mapped[str] = mapped_column(String, nullable=False)
-    telephone: Mapped[str] = mapped_column(String, nullable=False)
-    entreprise: Mapped[str] = mapped_column(String, nullable=False)
-    date_creation_contact: Mapped[date] = mapped_column(Date, nullable=False)
-    date_dernier_echange: Mapped[date] = mapped_column(Date, nullable=False)
+    nom_complet: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
+    email: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
+    telephone: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
+    entreprise: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
+    date_creation_contact: Mapped[date] = mapped_column(DateChiffree(), nullable=False)
+    date_dernier_echange: Mapped[date] = mapped_column(DateChiffree(), nullable=False)
 
     # Commercial responsable
     commercial_id: Mapped[int] = mapped_column(
