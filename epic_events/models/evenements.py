@@ -1,9 +1,14 @@
+# ================================ #
+# Imports
+# ================================ #
+
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, select
+from sqlalchemy import DateTime, ForeignKey, Integer, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from epic_events.database import Base
+from epic_events.security.chiffrement import TexteChiffre
 
 # ================================ #
 # Modèle métier d'Évènements
@@ -22,12 +27,12 @@ class Evenement(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # Infos de l'évènement
-    nom: Mapped[str] = mapped_column(String, nullable=False)
+    nom: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
     date_debut: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     date_fin: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    lieu: Mapped[str] = mapped_column(String, nullable=False)
+    lieu: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
     nombre_participants: Mapped[int] = mapped_column(Integer, nullable=False)
-    notes: Mapped[str] = mapped_column(Text, nullable=False)
+    notes: Mapped[str] = mapped_column(TexteChiffre(), nullable=False)
 
     # ================================ #
     # Relations du modèle Évènements
