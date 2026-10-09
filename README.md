@@ -12,29 +12,6 @@ Epic Events CRM est une application en ligne de commande permettant de gérer le
 
 L’application utilise Python, SQLAlchemy et PostgreSQL.
 
-## État du projet
-
-Fonctionnalités terminées :
-
-- Connexion à PostgreSQL
-- Modèles et relations SQLAlchemy
-- Création des tables
-- Schéma de la base de données
-- Matrice des permissions
-- Hachage et vérification des mots de passe avec Argon2
-- Authentification des collaborateurs
-- Permissions selon les départements
-- Création, consultation, modification et suppression des collaborateurs
-- Création, consultation et modification des clients
-- Association automatique d’un client au Commercial connecté
-- Création, consultation et modification des contrats
-- Filtres des contrats non signés et non soldés
-- Création, consultation et modification des évènements selon les permissions
-- Affectation d’un collaborateur Support à un évènement
-- Filtres des évènements sans Support et des évènements attribués au Support connecté
-- Menu principal de l’application
-- Journalisation des erreurs techniques avec Sentry
-
 ## Architecture
 
 L’application utilise une architecture « fat models, skinny views ».
@@ -42,7 +19,7 @@ L’application utilise une architecture « fat models, skinny views ».
 - Les modèles contiennent les requêtes SQLAlchemy et les règles métier
 - Les vues recueillent les saisies et affichent les résultats dans la console
 - Les contrôleurs coordonnent l’authentification, les permissions, les modèles et les transactions
-- Le package de sécurité contient l’authentification, les permissions et la gestion des mots de passe
+- Le package de sécurité contient l’authentification, les permissions, le chiffrement des données et la gestion des mots de passe
 
 ### Organisation finale des fichiers
 
@@ -61,6 +38,7 @@ epic_events/
 │   └── evenements.py
 ├── security/
 │   ├── authentification.py
+│   ├── chiffrement.py
 │   ├── mot_de_passe.py
 │   └── permissions.py
 ├── views/
@@ -73,13 +51,6 @@ epic_events/
 docs/
 ├── matrice_permissions.md
 └── schema-base-donnees.svg
-
-tests/
-├── test_authentification.py
-├── test_collaborateurs.py
-├── test_mdp.py
-├── test_parcours_integration.py
-└── test_permissions.py
 
 create_tables.py
 main.py
@@ -128,9 +99,34 @@ DB_PASSWORD=mot_de_passe
 DB_HOST=localhost
 DB_PORT=5432
 SENTRY_DSN=votre_dsn_sentry
+FERNET_KEY=votre_cle_fernet
 ```
 
+Générer une clé Fernet avec la commande :
+
+```powershell
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+Conserver cette clé dans `.env` pour permettre le déchiffrement des données enregistrées.
+
 Le fichier `.env` contient des informations sensibles et ne doit jamais être ajouté au dépôt Git.
+
+## Chiffrement des données
+
+L'application utilise Fernet, via la bibliothèque `cryptography`, pour chiffrer les données avant leur enregistrement dans PostgreSQL et les déchiffrer lors de leur lecture.
+
+Le fichier `epic_events/security/chiffrement.py` contient trois classes utilisant `TypeDecorator` de SQLAlchemy :
+
+- `TexteChiffre` pour les informations textuelles.
+- `DateChiffree` pour les dates.
+- `MontantChiffre` pour les montants des contrats.
+
+Le chiffrement concerne les informations personnelles des clients, les noms des collaborateurs, les montants et dates des contrats ainsi que les noms, lieux et notes des évènements.
+
+Les identifiants, les clés étrangères et certains champs nécessaires au fonctionnement des recherches et des filtres restent en clair.
+
+Les mots de passe des collaborateurs sont hachés séparément avec Argon2.
 
 ## Utilisation
 
@@ -147,17 +143,3 @@ python main.py
 ```
 
 Le menu principal permet ensuite d’accéder à la gestion des collaborateurs, des clients, des contrats et des évènements.
-
-## Qualité du code
-
-Formater le code :
-
-```powershell
-black .
-```
-
-Vérifier le respect des règles de style :
-
-```powershell
-flake8 .
-```
