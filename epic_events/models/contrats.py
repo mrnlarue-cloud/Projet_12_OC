@@ -1,10 +1,15 @@
+# ================================ #
+# Imports
+# ================================ #
+
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
-from sqlalchemy import Boolean, Date, ForeignKey, Numeric, select
+from sqlalchemy import Boolean, ForeignKey, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from epic_events.database import Base
+from epic_events.security.chiffrement import DateChiffree, MontantChiffre
 
 # ================================ #
 # Modèle métier de Contrat
@@ -21,10 +26,11 @@ class Contrat(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # Infos du contrat
-    montant_total: Mapped[Decimal] = mapped_column(Numeric, nullable=False)
-    montant_restant: Mapped[Decimal] = mapped_column(Numeric, nullable=False)
-    date_creation: Mapped[date] = mapped_column(Date, nullable=False)
+    montant_total: Mapped[Decimal] = mapped_column(MontantChiffre(), nullable=False)
+    montant_restant: Mapped[Decimal] = mapped_column(MontantChiffre(), nullable=False)
+    date_creation: Mapped[date] = mapped_column(DateChiffree(), nullable=False)
     signature: Mapped[bool] = mapped_column(Boolean, nullable=False)
+
     # Client et Commercial associés
     client_id: Mapped[int] = mapped_column(ForeignKey("clients.id"), nullable=False)
     commercial_id: Mapped[int] = mapped_column(
@@ -45,7 +51,7 @@ class Contrat(Base):
 # ================================ #
 
 
-# La console renvoie du texte, mais Numeric attend un Decimal
+# Conversion du montant saisi en Decimal
 def convertir_montant(montant_saisi):
     try:
         return Decimal(montant_saisi.strip().replace(",", "."))
@@ -109,8 +115,9 @@ def contrats_non_signes(session):
 
 
 def contrats_non_soldes(session):
-    requete = select(Contrat).where(Contrat.montant_restant > 0).order_by(Contrat.id)
-    return session.execute(requete).scalars().all()
+    # Filtrage des montants après déchiffrement
+    contrats = liste_contrats(session)
+    return [contrat for contrat in contrats if contrat.montant_restant > 0]
 
 
 # ================================ #

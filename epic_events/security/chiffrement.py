@@ -2,14 +2,14 @@
 # Imports
 # ================================ #
 
-
+from datetime import date
+from decimal import Decimal
 from os import getenv
 
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 from sqlalchemy import Text
 from sqlalchemy.types import TypeDecorator
-from datetime import date
 
 # ================================ #
 # Clé de chiffrement
@@ -71,3 +71,26 @@ class DateChiffree(TypeDecorator):
 
         date_texte = fernet.decrypt(value.encode()).decode()
         return date.fromisoformat(date_texte)
+
+
+# ================================ #
+# Chiffrement des montants
+# ================================ #
+
+
+class MontantChiffre(TypeDecorator):
+    impl = Text
+    cache_ok = True
+
+    # Conversion du montant en texte puis chiffrement
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        return fernet.encrypt(str(value).encode()).decode()
+
+    # Déchiffrement et reconversion en Decimal
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return None
+        montant_texte = fernet.decrypt(value.encode()).decode()
+        return Decimal(montant_texte)
